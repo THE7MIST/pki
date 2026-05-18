@@ -1,0 +1,306 @@
+Cryptography
+│
+├── 1. Symmetric Key Cryptography
+│   │
+│   ├── A. Block Cipher
+│   │   │
+│   │   ├── Feistel Structure
+│   │   │   ├── DES
+│   │   │   ├── 3DES
+│   │   │   └── Blowfish
+│   │   │
+│   │   ├── Substitution-Permutation Network (SPN)
+│   │   │   ├── AES
+│   │   │   ├── Serpent
+│   │   │   └── PRESENT
+│   │   │
+│   │   ├── Lightweight Block Cipher
+│   │   │   ├── SIMON
+│   │   │   ├── SPECK
+│   │   │   └── PRESENT
+│   │   │
+│   │   └── Modes of Operation
+│   │       ├── ECB
+│   │       ├── CBC
+│   │       ├── CFB
+│   │       ├── OFB
+│   │       ├── CTR
+│   │       └── GCM
+│   │
+│   └── B. Stream Cipher
+│       │
+│       ├── Synchronous Stream Cipher
+│       │   ├── RC4
+│       │   ├── Salsa20
+│       │   └── ChaCha20
+│       │
+│       └── Self-Synchronizing Stream Cipher
+│           ├── Cipher Feedback (CFB)
+│           └── Autokey Cipher
+│
+├── 2. Asymmetric Key Cryptography
+│   │
+│   ├── A. Public Key Encryption
+│   │   ├── RSA
+│   │   ├── ElGamal
+│   │   ├── Paillier
+│   │   └── ECC Encryption
+│   │
+│   ├── B. Digital Signature
+│   │   ├── RSA Signature
+│   │   ├── DSA
+│   │   ├── ECDSA
+│   │   └── EdDSA
+│   │
+│   ├── C. Key Exchange
+│   │   ├── Diffie-Hellman (DH)
+│   │   ├── Elliptic Curve DH (ECDH)
+│   │   └── MQV Protocol
+│   │
+│   ├── D. Identity-Based Cryptography
+│   │   ├── IBE
+│   │   └── IBS
+│   │
+│   └── E. Homomorphic Encryption
+│       ├── Partial Homomorphic
+│       ├── Somewhat Homomorphic
+│       └── Fully Homomorphic Encryption (FHE)
+│
+├── 3. Hash Functions
+│   │
+│   ├── A. Classical Hash Algorithms
+│   │   ├── MD2
+│   │   ├── MD4
+│   │   ├── MD5
+│   │   ├── SHA-1
+│   │   └── RIPEMD
+│   │
+│   ├── B. Secure Hash Algorithms
+│   │   ├── SHA-224
+│   │   ├── SHA-256
+│   │   ├── SHA-384
+│   │   ├── SHA-512
+│   │   └── SHA-3
+│   │
+│   ├── C. Keyed Hash Functions
+│   │   ├── HMAC
+│   │   ├── CMAC
+│   │   └── KMAC
+│   │
+│   ├── D. Password Hashing
+│   │   ├── bcrypt
+│   │   ├── scrypt
+│   │   ├── PBKDF2
+│   │   └── Argon2
+│   │
+│   └── E. Merkle Structures
+│       ├── Merkle Tree
+│       └── Hash Chains
+│
+├── 4. Classical Cryptography
+│   │
+│   ├── A. Substitution Cipher
+│   │   │
+│   │   ├── Monoalphabetic Cipher
+│   │   │   ├── Caesar Cipher
+│   │   │   ├── Affine Cipher
+│   │   │   └── Atbash Cipher
+│   │   │
+│   │   ├── Polyalphabetic Cipher
+│   │   │   ├── Vigenère Cipher
+│   │   │   ├── Autokey Cipher
+│   │   │   └── Beaufort Cipher
+│   │   │
+│   │   └── Polygraphic Cipher
+│   │       ├── Playfair Cipher
+│   │       ├── Hill Cipher
+│   │       └── Bifid Cipher
+│   │
+│   └── B. Transposition Cipher
+│       │
+│       ├── Rail Fence Cipher
+│       ├── Columnar Transposition
+│       ├── Double Transposition
+│       └── Route Cipher
+│
+├── 5. Quantum Cryptography
+│   │
+│   ├── Quantum Key Distribution (QKD)
+│   │   ├── BB84 Protocol
+│   │   ├── B92 Protocol
+│   │   └── E91 Protocol
+│   │
+│   ├── Post-Quantum Cryptography
+│   │   ├── Lattice-Based Cryptography
+│   │   ├── Hash-Based Cryptography
+│   │   ├── Code-Based Cryptography
+│   │   ├── Multivariate Polynomial Cryptography
+│   │   └── Supersingular Isogeny Cryptography
+│   │
+│   └── Quantum Algorithms
+│       ├── Shor’s Algorithm
+│       └── Grover’s Algorithm
+│
+├── 6. Specialized Cryptography
+│   │
+│   ├── Steganography
+│   │   ├── Image Steganography
+│   │   ├── Audio Steganography
+│   │   └── Video Steganography
+│   │
+│   ├── Visual Cryptography
+│   │   ├── Secret Sharing
+│   │   └── Image Share Scheme
+│   │
+│   ├── Secret Sharing Schemes
+│   │   ├── Shamir Secret Sharing
+│   │   └── Threshold Cryptography
+│   │
+│   ├── Blockchain Cryptography
+│   │   ├── Merkle Trees
+│   │   ├── Elliptic Curve Cryptography
+│   │   └── Hash Linking
+│   │
+│   └── Authentication Cryptography
+│       ├── Kerberos
+│       ├── OAuth
+│       ├── OpenID Connect
+│       └── FIDO2
+│
+├── 7. PKI (Public Key Infrastructure)
+│   │
+│   ├── Certificate Authority (CA)
+│   │   ├── Root CA
+│   │   ├── Subordinate CA
+│   │   └── Registration Authority (RA)
+│   │
+│   ├── Digital Certificates
+│   │   ├── X.509 Certificate
+│   │   ├── Self-Signed Certificate
+│   │   ├── Wildcard Certificate
+│   │   ├── EV Certificate
+│   │   └── SAN Certificate
+│   │
+│   ├── Trust Models
+│   │   ├── Hierarchical Trust Model
+│   │   ├── Web of Trust
+│   │   └── Bridge Trust Model
+│   │
+│   ├── Certificate Lifecycle
+│   │   ├── Certificate Issuance
+│   │   ├── Certificate Renewal
+│   │   ├── Certificate Revocation
+│   │   │   ├── CRL
+│   │   │   └── OCSP
+│   │   └── Certificate Expiration
+│   │
+│   ├── PKI Standards
+│   │   ├── PKCS
+│   │   ├── FIPS 140-2
+│   │   └── X.509
+│   │
+│   └── PKI Tools
+│       ├── OpenSSL
+│       ├── XCA
+│       └── Cryptool
+│
+├── 8. Authentication & Identity Security
+│   │
+│   ├── Authentication Factors
+│   │   ├── Something You Know
+│   │   ├── Something You Have
+│   │   └── Something You Are
+│   │
+│   ├── Authentication Types
+│   │   ├── Single-Factor Authentication
+│   │   ├── Multi-Factor Authentication (MFA)
+│   │   ├── Passwordless Authentication
+│   │   └── Biometric Authentication
+│   │
+│   ├── Identity Protocols
+│   │   ├── OAuth
+│   │   ├── OpenID Connect
+│   │   ├── SAML
+│   │   └── Kerberos
+│   │
+│   ├── FIDO Authentication
+│   │   ├── FIDO U2F
+│   │   ├── FIDO2
+│   │   └── WebAuthn
+│   │
+│   └── Single Sign-On (SSO)
+│
+├── 9. Secure Communication Protocols
+│   │
+│   ├── SSL/TLS
+│   │   ├── SSL Handshake
+│   │   ├── TLS Handshake
+│   │   ├── Cipher Suites
+│   │   ├── Session Keys
+│   │   └── HTTPS
+│   │
+│   ├── Secure Email
+│   │   ├── PGP
+│   │   ├── S/MIME
+│   │   └── Email Signing
+│   │
+│   └── Secure Shell
+│       └── SSH
+│
+├── 10. Password & Attack Security
+│   │
+│   ├── Password Attacks
+│   │   ├── Brute Force Attack
+│   │   ├── Dictionary Attack
+│   │   ├── Rainbow Table Attack
+│   │   └── Credential Stuffing
+│   │
+│   ├── Cryptographic Attacks
+│   │   ├── MITM Attack
+│   │   ├── Replay Attack
+│   │   ├── Side Channel Attack
+│   │   ├── Chosen Plaintext Attack
+│   │   ├── Chosen Ciphertext Attack
+│   │   ├── Known Plaintext Attack
+│   │   └── Birthday Attack
+│   │
+│   └── Secure Password Storage
+│       ├── Salt
+│       ├── Pepper
+│       └── Key Stretching
+│
+├── 11. Legal & Enterprise Cryptography
+│   │
+│   ├── IT Act
+│   │   ├── Digital Signature Legality
+│   │   ├── Electronic Records
+│   │   └── Certifying Authority
+│   │
+│   ├── Aadhaar e-Sign
+│   │
+│   ├── Timestamping Services
+│   │
+│   ├── Enterprise Directory Services
+│   │   ├── LDAP
+│   │   └── Active Directory
+│   │
+│   └── Zero Trust Architecture
+│
+└── 12. Blockchain & Distributed Trust
+    │
+    ├── Consensus Mechanisms
+    │   ├── Proof of Work (PoW)
+    │   ├── Proof of Stake (PoS)
+    │   └── Byzantine Fault Tolerance (BFT)
+    │
+    ├── Smart Contracts
+    │
+    ├── Wallet Cryptography
+    │   ├── Public Wallet Address
+    │   ├── Private Key Wallet
+    │   └── Seed Phrase
+    │
+    └── Distributed Ledger Security
+        ├── Immutable Ledger
+        ├── Decentralized Validation
+        └── Chain Verification
