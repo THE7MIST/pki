@@ -7,7 +7,8 @@
 # Requires:
 #   config.sh
 # ============================================================
-
+chmod +x *.sh
+./check_environment.sh
 set -e
 
 if [ ! -f config.sh ]; then
