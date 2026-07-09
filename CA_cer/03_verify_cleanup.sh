@@ -1,7 +1,7 @@
 #!/bin/bash
 # ============================================================
 # 03_verify_cleanup.sh
-# Final Verification & Trust Configuration
+# Final Verification, Trust Installation & Browser Import
 # ============================================================
 
 set -e
@@ -13,10 +13,38 @@ fi
 
 source config.sh
 
+############################################################
+# Verify Output Directory
+############################################################
+
+if [ ! -d "$OUTPUT_DIR" ]; then
+    echo "[ERROR] Output directory not found: $OUTPUT_DIR"
+    exit 1
+fi
+
 cd "$OUTPUT_DIR"
 
+############################################################
+# Verify Required Files
+############################################################
+
+REQUIRED_FILES=(
+    root.crt
+    sub.crt
+    server.crt
+    server.key
+    fullchain.crt
+)
+
+for file in "${REQUIRED_FILES[@]}"; do
+    if [ ! -f "$file" ]; then
+        echo "[ERROR] Missing file: $file"
+        exit 1
+    fi
+done
+
 echo "====================================================="
-echo "      FINAL VERIFICATION & TRUST CONFIGURATION"
+echo " FINAL VERIFICATION & TRUST CONFIGURATION"
 echo "====================================================="
 
 ############################################################
@@ -24,52 +52,53 @@ echo "====================================================="
 ############################################################
 
 echo
-echo "[1/12] Installing Root CA into Trust Store..."
+echo "[1/14] Installing Root CA into System Trust Store..."
 
-cp root.crt /usr/local/share/ca-certificates/rootca.crt
+sudo rm -f /usr/local/share/ca-certificates/rootca.crt
+sudo cp root.crt /usr/local/share/ca-certificates/rootca.crt
 
 ############################################################
-# Update Certificates
+# Update Trust Store
 ############################################################
 
 echo
-echo "[2/12] Updating Trusted Certificates..."
+echo "[2/14] Updating Trusted Certificates..."
 
-update-ca-certificates
+sudo update-ca-certificates --fresh
 
 ############################################################
 # Verify Apache Configuration
 ############################################################
 
 echo
-echo "[3/12] Verifying Apache Configuration..."
+echo "[3/14] Verifying Apache Configuration..."
 
-apachectl configtest
+sudo apachectl configtest
 
 ############################################################
 # Restart Apache
 ############################################################
 
 echo
-echo "[4/12] Restarting Apache..."
+echo "[4/14] Restarting Apache..."
 
-systemctl restart apache2
+sudo systemctl restart apache2
 
 ############################################################
 # Apache Status
 ############################################################
 
 echo
-echo "[5/12] Apache Status..."
+echo "[5/14] Apache Service Status..."
 
-systemctl --no-pager status apache2
+sudo systemctl --no-pager status apache2
 
 ############################################################
 # Verify Certificate Chain
 ############################################################
 
 echo
-echo "[6/12] Verifying Certificate Chain..."
+echo "[6/14] Verifying Certificate Chain..."
 
 openssl verify \
     -CAfile root.crt \
@@ -81,7 +110,7 @@ openssl verify \
 ############################################################
 
 echo
-echo "[7/12] Root CA Information..."
+echo "[7/14] Root CA Information..."
 
 openssl x509 \
     -in root.crt \
@@ -95,7 +124,7 @@ openssl x509 \
 ############################################################
 
 echo
-echo "[8/12] Sub CA Information..."
+echo "[8/14] Sub CA Information..."
 
 openssl x509 \
     -in sub.crt \
@@ -109,7 +138,7 @@ openssl x509 \
 ############################################################
 
 echo
-echo "[9/12] Server Certificate Information..."
+echo "[9/14] Server Certificate Information..."
 
 openssl x509 \
     -in server.crt \
@@ -121,11 +150,13 @@ openssl x509 \
 ############################################################
 
 echo
-echo "[10/12] HTTPS Test (OpenSSL)..."
+echo "[10/14] HTTPS Test (OpenSSL)..."
 
 openssl s_client \
-    -connect ${DOMAIN}:443 \
-    -servername ${DOMAIN} \
+    -connect "${DOMAIN}:443" \
+    -servername "${DOMAIN}" \
+    -verify_return_error \
+    -brief \
     </dev/null
 
 ############################################################
@@ -133,36 +164,92 @@ openssl s_client \
 ############################################################
 
 echo
-echo "[11/12] HTTPS Test (curl)..."
+echo "[11/14] HTTPS Test (curl)..."
 
-curl -Iv https://${DOMAIN}
+curl --fail --silent --show-error -Iv "https://${DOMAIN}"
 
 ############################################################
 # DNS Verification
 ############################################################
 
 echo
-echo "[12/12] DNS Verification..."
+echo "[12/14] DNS Verification..."
 
 echo
 echo "getent hosts"
-getent hosts ${DOMAIN}
+getent hosts "${DOMAIN}"
 
 echo
 echo "nslookup"
-nslookup ${DOMAIN} || true
+nslookup "${DOMAIN}" || true
 
 echo
 echo "ping"
-ping -c 4 ${DOMAIN} || true
+ping -c 4 "${DOMAIN}" || true
 
 ############################################################
-# Summary
+# Firefox Trust (APT + Snap Firefox)
+############################################################
+
+echo
+echo "[13/14] Importing Root CA into Firefox..."
+
+# Install certutil if missing
+if ! command -v certutil >/dev/null 2>&1; then
+    echo "Installing libnss3-tools..."
+    sudo apt-get update -y
+    sudo apt-get install -y libnss3-tools
+fi
+
+# Detect Firefox Profile (APT or Snap)
+PROFILE=$(find \
+    "$HOME/.mozilla/firefox" \
+    "$HOME/snap/firefox/common/.mozilla/firefox" \
+    -maxdepth 1 \
+    -type d \
+    -name "*.default*" 2>/dev/null | head -n 1)
+
+if [ -n "$PROFILE" ]; then
+
+    echo "Firefox Profile : $PROFILE"
+
+    # Remove old certificate (if it exists)
+    certutil \
+        -D \
+        -d "sql:$PROFILE" \
+        -n "$ROOT_CA_NAME" \
+        2>/dev/null || true
+
+    # Import Root CA
+    certutil \
+        -A \
+        -d "sql:$PROFILE" \
+        -n "$ROOT_CA_NAME" \
+        -t "CT,C,C" \
+        -i "$OUTPUT_DIR/root.crt"
+
+    echo "[OK] Root CA imported into Firefox."
+
+    # Restart Firefox if running
+    if pgrep firefox >/dev/null; then
+        echo "Restarting Firefox..."
+        pkill firefox
+        sleep 2
+    fi
+
+    nohup firefox >/dev/null 2>&1 &
+
+else
+    echo "[INFO] Firefox profile not found. Skipping Firefox import."
+fi
+
+############################################################
+# Deployment Summary
 ############################################################
 
 echo
 echo "====================================================="
-echo "                DEPLOYMENT SUMMARY"
+echo "               DEPLOYMENT SUMMARY"
 echo "====================================================="
 
 echo
@@ -173,49 +260,41 @@ echo "Apache Site            : $SITE_NAME"
 
 echo
 echo "Certificates"
-
-echo "------------------------------------------"
-
+echo "-----------------------------------------------------"
 echo "Root CA                : root.crt"
-
 echo "Sub CA                 : sub.crt"
-
 echo "Server Certificate     : server.crt"
-
-echo "Full Chain             : fullchain.crt"
+echo "Certificate Chain      : fullchain.crt"
 
 echo
 echo "Certificate Location"
-
-echo "------------------------------------------"
-
+echo "-----------------------------------------------------"
 echo "$OUTPUT_DIR"
 
 echo
 echo "Verification"
-
-echo "------------------------------------------"
-
+echo "-----------------------------------------------------"
 echo "✔ Root CA Installed"
-
 echo "✔ Certificate Chain Verified"
-
 echo "✔ Apache Configuration Valid"
-
 echo "✔ Apache Running"
-
 echo "✔ HTTPS Enabled"
+echo "✔ DNS Resolution Verified"
 
-echo "✔ Website Accessible"
+if [ -n "$PROFILE" ]; then
+    echo "✔ Firefox Root CA Imported"
+else
+    echo "⚠ Firefox Root CA Not Imported (Profile Not Found)"
+fi
 
 echo
 echo "Open Browser"
-
-echo "------------------------------------------"
-
+echo "-----------------------------------------------------"
 echo "https://$DOMAIN"
 
 echo
-echo "HTTPS Deployment Completed Successfully."
+echo "====================================================="
+echo "      HTTPS DEPLOYMENT COMPLETED SUCCESSFULLY"
+echo "====================================================="
 
 exit 0
