@@ -7,6 +7,8 @@
 #   02_server_apache.sh
 #   03_verify_cleanup.sh
 # ============================================================
+chmod +x *.sh
+./check_environment.sh
 
 set -e
 
